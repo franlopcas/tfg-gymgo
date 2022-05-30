@@ -1,0 +1,17 @@
+img {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.pick-avatar{
+    width: 80px;
+    opacity: 0.3;
+}
+
+.pick-avatar-seleccionado{
+    transition: opacity 0.5s linear;
+    opacity: 1 !important;
+}

@@ -1,0 +1,29 @@
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" 
+                 (ionRefresh)="cargar($event)" 
+                 pullFactor="0.8" 
+                 pullMin="60" 
+                 pullMax="120">
+<ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+  <div>
+    <ion-grid fixed>
+      <ion-row>
+
+        <ion-col size="6" *ngFor="let ejercicio of ejercicios">
+
+            <ion-card *ngIf="ejercicio.cover">
+              <ion-card-header>
+                <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer" (click)="detalle(ejercicio._id)">
+              </ion-card-header>
+              <ion-card-content>
+                <h2>{{ejercicio.nombre}}</h2>
+              </ion-card-content>
+            </ion-card>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+

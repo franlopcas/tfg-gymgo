@@ -1,0 +1,119 @@
+<ion-content>
+  <ion-slides class="mainSlide" #slidePrincipal>
+    <ion-slide>
+      <form (ngSubmit)="login(fLogin)" #fLogin="ngForm">
+        <ion-grid fixed>
+  
+          <ion-row>
+            <ion-col>
+              <img src="/assets/logotipo.png">
+            </ion-col>
+          </ion-row>
+  
+          <ion-row>
+            <ion-col>
+              <ion-list>
+  
+                <ion-item>
+                  <ion-label>Email</ion-label>
+                  <ion-input name="email" 
+                             type="email" 
+                             [(ngModel)]="loginUser.email" 
+                             pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                             required></ion-input>
+                </ion-item>
+  
+                <ion-item>
+                  <ion-label>Password</ion-label>
+                  <ion-input name="password" 
+                             type="password" 
+                             [(ngModel)]="loginUser.password" 
+                             required></ion-input>
+                </ion-item>
+  
+              </ion-list>
+            </ion-col>
+          </ion-row>
+  
+          <ion-row>
+            <ion-col>
+              <ion-button type="submit" color="tertiary" shape="round">
+                Login
+              </ion-button>
+            </ion-col>
+          </ion-row>
+  
+        </ion-grid>
+
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="mostrarRegistro()"  color="secondary" shape="round">
+              Registro
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-slide>
+
+    <ion-slide>
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col>
+            <img src="/assets/logotipo.png">
+          </ion-col>
+        </ion-row>
+        <!--Avatar Selector-->
+        <app-avatar-selector (avatarSel)="registerUser.avatar = $event"></app-avatar-selector>
+
+        <form (ngSubmit)="registro(fRegistro)" #fRegistro="ngForm">
+          <ion-row>
+            <ion-col>
+              <ion-list>
+                <ion-item>
+                  <ion-label>Nombre</ion-label>
+                  <ion-input name="nombre"
+                             type="text" 
+                             [(ngModel)]="registerUser.nombre" 
+                             required></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Email</ion-label>
+                  <ion-input name="email" 
+                             type="email" 
+                             [(ngModel)]="registerUser.email" 
+                             pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                             required></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Password</ion-label>
+                  <ion-input name="password" 
+                             type="password" 
+                             [(ngModel)]="registerUser.password" 
+                             required></ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-button type="submit" color="tertiary" shape="round">
+                Crear Usuario
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-button (click)=mostrarLogin()  color="secondary" shape="round">
+                Cancelar
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </form>
+
+      </ion-grid>
+    </ion-slide>
+    
+  </ion-slides>
+</ion-content>

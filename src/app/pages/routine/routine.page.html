@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar>
+    <h3 class="cabecera">{{rutina.nombre}}</h3>
+    <ion-buttons slot="start">
+      <ion-button (click)="back()" expand="block" fill="clear" shape="round">
+        <ion-icon size="large" color="tertiary" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" 
+                 (ionRefresh)="cargar($event)" 
+                 pullFactor="0.8" 
+                 pullMin="60" 
+                 pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+<div>
+  <ion-grid fixed>
+    <ion-row>
+
+      <ion-col size="6" *ngFor="let ejercicio of ejercicios">
+
+          <ion-card *ngIf="ejercicio.cover">
+            <ion-card-header (click)="detalle(ejercicio._id)">
+            <!--<ion-card-header [routerLink]="['/exercise',ejercicio.nombre]">-->
+              <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer">
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ejercicio.nombre}}</h2>
+            </ion-card-content>
+          </ion-card>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
+
+</ion-content>
+
+<ion-footer class="ion-no-border" collapse="fade" [translucent]="true">
+  <ion-toolbar>
+
+    <div slot="start">
+    <ion-button *ngIf="rol === 'admin'"
+                class="boton"
+                mode="ios"
+                color="success"
+                [routerLink]="['/edit-routine',rutina._id]">
+          Editar
+    </ion-button>
+    </div>
+
+    <div slot="end">
+    <ion-button *ngIf="rol === 'admin'"
+                class="boton"
+                mode="ios"
+                color="danger"
+                (click)="eliminar()">
+          Eliminar
+    </ion-button>
+  </div>
+  </ion-toolbar>
+</ion-footer>

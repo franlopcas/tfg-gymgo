@@ -1,0 +1,84 @@
+.cabecera{
+    padding-right: 40px;
+    text-align: end;
+}
+
+.boton{
+    width: 110px;
+    height: 30px;
+    margin: 5px;
+}
+
+.logo{
+    margin: 10px;
+    width: 75px;
+}
+
+.image-cover{
+    width: 60px;
+    height: 60px;
+    background-position: center;
+    background-size: cover;
+}
+
+.image-routine{
+    width: 47px;
+    height: 47px;
+    background-position: center;
+    background-size: cover;
+}
+
+
+h2{
+    font-size: small;
+}
+
+ion-row{
+    ion-card{
+        margin-left: 2px !important;
+        margin-right: 2px !important;
+    }
+}
+
+
+.texto{
+    padding-left: 5px;
+}
+
+ion-item{
+    padding-top: 10px;
+}
+
+ion-card{
+    position: relative;
+    text-align: center;
+}
+
+ion-col{
+    padding: 0%;
+}
+
+.fixed-box{
+    width: 100%;
+    height: 360px;
+    //overflow-y: scroll;
+    z-index: 10;
+    background: #fff;
+}
+
+.drop-area{
+    align-items: left;
+    border: 1px solid #3880FF;
+    width: 370px;
+    margin-left: 10px;
+    overflow-y: scroll;
+    display: inline-flex;
+    height: 350px;
+    justify-content: left;
+    user-select: none;
+    background: #fff;
+}
+
+.item-group{
+    margin-top: 400px;
+}

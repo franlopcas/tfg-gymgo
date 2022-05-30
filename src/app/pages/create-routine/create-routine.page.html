@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar>
+    <div class="logo" slot="start">
+      <img src="/assets/logotipo.png">
+    </div>
+    <h3 class="cabecera">{{rutina.nombre}}</h3>
+    <!--
+    <ion-buttons slot="start">
+      <ion-button (click)="back()" expand="block" fill="clear" shape="round">
+        <ion-icon size="large" color="tertiary" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollY]="contentScrollActive">
+
+  <div slot="fixed" class="fixed-box">
+
+    <div class="drop-area" #dropZoneRoutine>
+            <!--{{rutinaEjercicios | json}} -->
+        <!-- class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2" -->
+
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col size="4" *ngFor="let ejercicio of rutinaEjercicios">
+            <ion-card mode="ios">
+              <ion-card-header>
+                <img (click)="eliminar(ejercicio)" class="image-routine" [style]="(ejercicio.cover | imagen) | domSanitizer"> 
+              </ion-card-header>
+              <ion-card-content>
+                <h2>{{ejercicio.nombre}}</h2>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
+
+    </div>
+
+              <ion-searchbar placeholder="Buscar ejercicio"
+                       color="secondary"
+                       (ionChange)="buscar($event)"
+                       [value]="text"
+                       debounce="700" 
+                       mode="ios"
+                       autocomplete="true"
+                       animated>
+        </ion-searchbar>  
+  </div>
+
+
+
+   <div class="item-group"> 
+
+    <ion-item *ngFor="let ejercicio of ejerciciosBuscar">
+      <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer" (click)="detalle(ejercicio._id)">
+      <div>
+        <h6 class="texto">{{ejercicio.nombre}}</h6>
+        <h2 class="texto">{{ejercicio.tipo}}</h2>
+      </div>
+    </ion-item>
+
+<!--
+      <ion-grid fixed>
+      <ion-row>
+        <ion-col size="6" *ngFor="let ejercicio of listaEjercicios">
+          <ion-card>
+            <ion-card-header>
+              <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer">
+            </ion-card-header>
+            <ion-card-content>
+              <h6>{{ejercicio.nombre}}</h6>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+-->
+  </div>
+
+</ion-content>
+
+<ion-footer class="ion-no-border" collapse="fade" [translucent]="true">
+  <ion-toolbar>
+
+    <div slot="start">
+      <ion-button class="boton"
+                  mode="ios"
+                  color="primary"
+                  (click)="crear()">
+            Crear
+      </ion-button>
+    </div>
+    <div slot="end">
+      <ion-button class="boton"
+                  mode="ios"
+                  color="danger"
+                  (click)="cancelar()">
+            Cancelar
+      </ion-button>
+  </div>
+  </ion-toolbar>
+</ion-footer>

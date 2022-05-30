@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar>
+    <h3 class="cabecera">Crear ejercicio</h3>
+    <ion-buttons slot="start">
+      <ion-button (click)="back()" expand="block" fill="clear" shape="round">
+        <ion-icon size="large" color="tertiary" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-row>
+    <ion-col size="6">
+      <ion-button expand="full"
+                  shape="round"
+                  color="tertiary"
+                  (click)="libreria()">
+        <ion-icon slot="start" name="images"></ion-icon>
+        Seleccionar Cover
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col size="3">
+      <ion-card>
+        <img [src]="tempImage | imageSanitizer">        
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <form (ngSubmit)="crearEjercicio(fCrear)" #fCrear="ngForm">
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item>
+            <ion-label class="label" position="floating">Nombre</ion-label>
+              <ion-input name="nombre"
+                         type="text" 
+                         [(ngModel)]="registerEjercicio.nombre" 
+                         required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="label" position="floating">Tipo</ion-label>
+              <ion-select mode="ios" 
+                          name="tipo" 
+                          type="text" 
+                          [(ngModel)]="registerEjercicio.tipo"
+                          required>
+                <ion-select-option *ngFor="let tipo of tipos">
+                  {{tipo}}
+                </ion-select-option>
+              </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label class="label" position="floating">Preparación</ion-label>
+            <ion-textarea rows="10" 
+                          cols="20" 
+                          name="preparacion" 
+                          type="text" 
+                          [(ngModel)]="registerEjercicio.preparacion" 
+                          placeholder="Indique cómo debería prepararse el usuario"
+                          required></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <ion-label class="label" position="floating">Ejecución</ion-label>
+            <ion-textarea rows="10" 
+                          cols="20" 
+                          name="ejecucion" 
+                          type="text" 
+                          [(ngModel)]="registerEjercicio.ejecucion"
+                          placeholder="Indique cómo realizar el ejercicio"
+                          required></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <ion-label class="label" position="floating">Recomendaciones</ion-label>
+            <ion-textarea rows="10" 
+                          cols="20" 
+                          name="recomendacion" 
+                          type="text" 
+                          [(ngModel)]="registerEjercicio.recomendacion"
+                          placeholder="Introduzca alguna recomendación"></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button class="boton" type="submit" color="tertiary" shape="round">
+          Crear
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+
+</ion-content>

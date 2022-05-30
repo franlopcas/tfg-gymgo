@@ -1,0 +1,60 @@
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" 
+                 (ionRefresh)="cargar($event)" 
+                 pullFactor="0.8" 
+                 pullMin="60" 
+                 pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  
+  <ion-searchbar placeholder="Buscar ejercicio"
+                 color="secondary"
+                 (ionChange)="buscar($event)"
+                 [value]="text"
+                 debounce="700" 
+                 mode="ios"
+                 autocomplete="true"
+                 animated>
+  </ion-searchbar>
+
+  <ion-list *ngIf="buscando === false">
+
+    <div class="centrado">
+      <ion-button *ngIf="rol === 'admin'"
+                  class="boton"
+                  mode="ios"
+                  (click)="crear()">
+          <ion-icon slot="start" name="add"></ion-icon>
+            Crear
+      </ion-button>
+    </div>
+
+    <ion-list-header>
+      <ion-label>Ideas</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let idea of ideas"
+              (click)="text = idea">
+              <ion-label color="primary">{{idea}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div>
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="6" *ngFor="let ejercicio of ejercicioBuscar">
+          <ion-card (click)="detalle(ejercicio._id)">
+          <!--<ion-card [routerLink]="['/exercise',ejercicio.nombre]"> -->
+            <!--<ion-card (click)="detalle(ejercicio.nombre)">-->
+            <ion-card-header>
+              <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer">
+            </ion-card-header>
+            <ion-card-content>
+              <h2>{{ejercicio.nombre}}</h2>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+</ion-content>

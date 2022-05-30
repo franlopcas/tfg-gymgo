@@ -1,0 +1,30 @@
+.mainSlide, .mainSlide ion-slide{
+    width: 100%;
+    height: 100%;
+}
+
+img {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.pick-avatar{
+    width: 80px;
+    opacity: 0.3;
+}
+
+.pick-avatar-seleccionado{
+    transition: opacity 0.5s linear;
+    opacity: 1 !important;
+}
+
+ion-toolbar {
+    margin-bottom: 10px;
+}
+
+ion-label {
+    text-shadow: 10px;
+}

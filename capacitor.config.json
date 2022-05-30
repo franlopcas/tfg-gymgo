@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "tfg-gymgo",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

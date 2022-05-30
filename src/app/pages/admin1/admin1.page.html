@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <img class="img-avatar" (click)="verPerfil()" src="assets/avatars/{{usuario.avatar}}">
+    <ion-button (click)="logout()" slot="end" expand="block" fill="clear" shape="round" color="danger">
+      <ion-icon size="large" slot="icon-only" name="exit-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" 
+                 (ionRefresh)="cargar($event)" 
+                 pullFactor="0.8" 
+                 pullMin="60" 
+                 pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="centrado">
+    <ion-button class="boton"
+                mode="ios"
+                (click)="presentAlertPrompt()">
+        <ion-icon slot="start" name="add"></ion-icon>
+          Crear
+    </ion-button>
+  </div>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col>
+        <ion-list size="12" *ngFor="let rutina of rutinas">
+          <ion-item>
+            <ion-label [routerLink]="['/routine',rutina._id]">{{rutina.nombre}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
