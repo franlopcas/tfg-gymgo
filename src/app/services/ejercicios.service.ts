@@ -1,10 +1,11 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Ejercicio, Usuario } from '../interfaces/interfaces';
+import { Injectable} from '@angular/core';
+import { Ejercicio} from '../interfaces/interfaces';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../environments/environment';
 import { UsuarioService } from './usuario.service';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer/ngx';
+import { UiServiceService } from './ui-service.service';
 
 const URL = environment.url;
 
@@ -19,6 +20,7 @@ export class EjerciciosService{
   constructor(private http: HttpClient, 
               private storage: Storage,
               private usuarioService: UsuarioService,
+              private uiService: UiServiceService,
               private fileTransfer: FileTransfer) {this.initDB();}
 
   async initDB(){
@@ -38,6 +40,7 @@ export class EjerciciosService{
           resolve(true);
         }else{
           resolve(false);
+          this.uiService.alertaInformativa(resp['mensaje']);
         }
       });
     });
@@ -48,9 +51,7 @@ export class EjerciciosService{
       this.http.get(`${URL}/ejercicio/`).subscribe(resp=>{
         if(resp['ok']){
           this.ejercicio = resp['ejercicios'];
-          //console.log("Pa loca tu:",this.ejercicio);
           resolve(this.ejercicio);
-          //console.log(this.ejercicio[36].nombre);
         }else{
           resolve(null);
         }
@@ -58,15 +59,11 @@ export class EjerciciosService{
     });
   }
   
-//localhost:3000/ejercicio/ver/?nombre=Ejercicio 11
   async getEjercicio(id: any): Promise<Ejercicio>{
-    //    this.http.get<Ejercicio>(`${URL}/ejercicio/ver/?nombre=${nombre}`);
     return new Promise(resolve=>{
       this.http.get(`${URL}/ejercicio/ver/?_id=${id}`).subscribe(resp=>{
-        //console.log(resp['ok']);
         if(resp['ok']){
           this.ejercicio = resp['ejercicioDB'];
-          //console.log("Get ejercicio: ",this.ejercicio);
           resolve(this.ejercicio);
         }else{
           resolve(null);
@@ -97,6 +94,7 @@ export class EjerciciosService{
             resolve(true);
           }else{
             resolve(false);
+            this.uiService.alertaInformativa(resp['mensaje']);
           }
         });
       }else{
@@ -105,6 +103,7 @@ export class EjerciciosService{
             resolve(true);
           }else{
             resolve(false);
+            this.uiService.alertaInformativa(resp['mensaje']);
           }
         });       
       }
@@ -114,7 +113,6 @@ export class EjerciciosService{
 
   eliminarEjercicio(ejercicio: Ejercicio){
     return new Promise(resolve=>{
-      // localhost:3000/ejercicio/delete/?nombre=Ejercicio 11
       this.http.post(`${URL}/ejercicio/delete`,ejercicio).subscribe(resp=>{
         if(resp['ok']){
           resolve(true);

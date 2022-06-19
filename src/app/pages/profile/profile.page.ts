@@ -20,7 +20,6 @@ export class ProfilePage implements OnInit {
               private uiService: UiServiceService) { }
 
   ngOnInit() {
-    console.log(this.usuario);
     this.getRolUsuario();
   }
 
@@ -32,7 +31,7 @@ export class ProfilePage implements OnInit {
   async back(){
     const rol = await this.usuarioService.comprobarRol();
     if(rol){
-      this.navCtrl.navigateRoot('/main/admin/admin1', {animated: true});
+      this.navCtrl.navigateRoot('/main/tabs/tab2', {animated: true});
     }else{
       this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
     }

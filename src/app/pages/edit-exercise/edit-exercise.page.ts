@@ -54,7 +54,6 @@ export class EditExercisePage implements OnInit {
     this.ejercicio = await this.ejercicioService.getEjercicio(this.id);
     this.cover = this.ejercicioService.verCover(this.ejercicio.cover);
     this.tempImage = this.cover;
-    console.log(this.ejercicio);
   }
   async actualizarEjercicio(fActualizar: NgForm){
     const alert = await this.alertCtrl.create({
@@ -66,7 +65,7 @@ export class EditExercisePage implements OnInit {
           id: 'confirm-button',
           handler: async () => {
             if(fActualizar.invalid){
-              this.uiService.alertaInformativa('Es obligatorio rellenar todos los campos');
+              this.uiService.alertaInformativa('Debe rellenar todos los campos obligatorios');
               return;
             }
   
@@ -74,11 +73,9 @@ export class EditExercisePage implements OnInit {
         
             if(actualizado){
               this.uiService.alertaInformativa('Ejercicio actualizado');
-              this.navCtrl.navigateRoot(`/main/admin/admin2`, {animated: true});
-              //this.navCtrl.navigateRoot(`/exercise/${this.ejercicio.nombre}`, {animated: true});
-              //this.back();
+              this.navCtrl.navigateRoot(`/main/tabs/tab3`, {animated: true});
             }else{
-              this.uiService.alertaInformativa('No se pudo actualizar');
+              this.uiService.presentToast('No se pudo actualizar');
             }
           }
         }, 
@@ -96,47 +93,6 @@ export class EditExercisePage implements OnInit {
     await alert.present();
   }
 
-/** 
-  async actualizarEjercicio(fActualizar: NgForm){
-    const alert = await this.alertCtrl.create({
-      message: `¿Desea actualizar ${this.ejercicio.nombre}?`,
-      mode: "ios",
-      buttons: [
-        {
-          text: 'Confirmar',
-          id: 'confirm-button',
-          handler: async () => {
-            if(fActualizar.invalid){
-              this.uiService.alertaInformativa('Es obligatorio rellenar todos los campos');
-              return;
-            }
-  
-            const actualizado = await this.ejercicioService.actualizarEjercicio(this.ejercicio, this.cambiado);
-        
-            if(actualizado){
-              this.uiService.alertaInformativa('Ejercicio actualizado');
-              this.navCtrl.navigateRoot(`/main/admin/admin2`, {animated: true});
-              //this.navCtrl.navigateRoot(`/exercise/${this.ejercicio.nombre}`, {animated: true});
-              //this.back();
-            }else{
-              this.uiService.alertaInformativa('No se pudo actualizar');
-            }
-          }
-        }, 
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          id: 'cancel-button',
-          handler: () => {
-            console.log("Cancelado");
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-*/
   async detalle(id: string){
     const modal = await this.modalCtrl.create({
       component: ExerciseComponent,
@@ -186,7 +142,7 @@ export class EditExercisePage implements OnInit {
           id: 'confirm-button',
           handler: async () => {
               this.uiService.presentToast("Edición cancelada");
-              this.navCtrl.navigateRoot('/main/admin/admin2', {animated: true});
+              this.navCtrl.navigateRoot('/main/tabs/tab3', {animated: true});
           }
         }, 
         {

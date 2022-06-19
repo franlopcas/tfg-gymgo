@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment.prod';
 import { Storage } from '@ionic/storage';
 import { Rutina, Ejercicio } from '../interfaces/interfaces';
-import { UsuarioService } from './usuario.service';
 
 const URL = environment.url;
 
@@ -17,8 +16,7 @@ export class RutinasService {
   private ejercicios: any;
 
   constructor(private http: HttpClient,
-              private storage: Storage,
-              private usuarioService: UsuarioService) {this.initDB(); }
+              private storage: Storage) {this.initDB(); }
 
   async initDB(){
     this.storage = await this.storage.create();
@@ -47,7 +45,6 @@ export class RutinasService {
       this.http.get(`${URL}/rutina/`).subscribe(resp=>{
         if(resp['ok']){
           this.rutina = resp['rutinas'];
-          //console.log("Rutinas: ", this.rutina);
           resolve(this.rutina);
         }else{
           resolve(null);

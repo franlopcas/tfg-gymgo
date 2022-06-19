@@ -26,7 +26,6 @@
       <ion-col size="6" *ngFor="let ejercicio of ejercicios">
 
           <ion-card *ngIf="ejercicio.cover">
-            <!--<ion-card-header [routerLink]="['/exercise',ejercicio.nombre]">-->
               <ion-card-header (click)="detalle(ejercicio._id)">
               <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer">
             </ion-card-header>
@@ -50,7 +49,7 @@
                 class="boton"
                 mode="ios"
                 color="success"
-                [routerLink]="['/edit-table',tabla._id]">
+                (click)="editar()">
           Editar
     </ion-button>
     </div>

@@ -3,7 +3,6 @@ import { environment } from '../../environments/environment.prod';
 import { Tabla, Ejercicio } from '../interfaces/interfaces';
 import { Storage } from '@ionic/storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { UsuarioService } from './usuario.service';
 
 const URL = environment.url;
 
@@ -17,8 +16,7 @@ export class TablasService {
   private ejercicios: any;
 
   constructor(private http: HttpClient,
-              private storage: Storage,
-              private usuarioService: UsuarioService) {this.initDB();}
+              private storage: Storage) {this.initDB();}
 
   async initDB(){
     this.storage = await this.storage.create();
@@ -65,7 +63,6 @@ export class TablasService {
           this.tabla = resp['tablaDB'];
           resolve(this.tabla);
         }else{
-          console.log("ERROR");
           resolve(null);
         }
       });

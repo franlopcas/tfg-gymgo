@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonSlides, AlertController } from '@ionic/angular';
-import { FormBuilder, NgForm, Validators } from '@angular/forms';
+import { IonSlides} from '@ionic/angular';
+import { NgForm} from '@angular/forms';
 import { UsuarioService } from '../../services/usuario.service';
 import { NavController } from '@ionic/angular';
 import { UiServiceService } from '../../services/ui-service.service';
@@ -44,7 +44,7 @@ export class LoginPage implements OnInit {
   async login(fLogin: NgForm){
 
     if(fLogin.invalid){
-      this.uiService.alertaInformativa('Email y/o contraseña no son válidos');
+      this.uiService.alertaInformativa('Email y/o contraseña no son correctos');
       return;
     }
     
@@ -53,18 +53,18 @@ export class LoginPage implements OnInit {
       // Navega a tabs
       const rol = await this.usuarioService.comprobarRol();
       if(rol){
-        this.navCtrl.navigateRoot('/main/admin/admin1', {animated: true});
+        this.navCtrl.navigateRoot('/main/tabs/tab2', {animated: true});
       }else{
         this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
       }
     }else{
-      this.uiService.alertaInformativa('Email y/o contraseña no son válidos');
+      this.uiService.alertaInformativa('Email y/o contraseña no son correctos');
     }
   }
 
   async registro(fRegistro: NgForm){
     if(fRegistro.invalid){
-      this.uiService.alertaInformativa('Email y/o contraseña no son válidos');
+      this.uiService.alertaInformativa('Es obligatorio rellenar todos los campos');
       return;
     }
 
@@ -75,7 +75,7 @@ export class LoginPage implements OnInit {
       this.navCtrl.navigateRoot('/main/tabs/tab1',{animated: true});
     }else{
       // Mostrar alerta de usuario y contraseña no correctos
-      this.uiService.alertaInformativa('Email y/o contraseña no son válidos');
+      this.uiService.alertaInformativa('El correo electrónico ya existe');
     }
     
   }

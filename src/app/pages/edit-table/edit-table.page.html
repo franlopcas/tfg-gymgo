@@ -11,14 +11,12 @@
 
   <div slot="fixed" class="fixed-box">
     <div class="drop-area" #dropZoneTable>
-            <!--{{rutinaEjercicios | json}} -->
 
       <ion-grid fixed>
         <ion-row>
           <ion-col size="4" *ngFor="let ejercicio of tablaEjercicios">
             <ion-card *ngIf="ejercicio.cover" mode="ios">
               <ion-card-header>
-                <!--<img (click)="quiensoy(ejercicio)" class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer"> -->
                 <img (click)="eliminar(ejercicio)" class="image-routine" [style]="(ejercicio.cover | imagen) | domSanitizer"> 
               </ion-card-header>
               <ion-card-content>

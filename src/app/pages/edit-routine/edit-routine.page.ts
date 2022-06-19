@@ -1,10 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, Injectable } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import { AlertController, Gesture, GestureController, IonItem, NavController, ModalController } from '@ionic/angular';
-import { UsuarioService } from '../../services/usuario.service';
 import { EjerciciosService } from '../../services/ejercicios.service';
 import { RutinasService } from '../../services/rutinas.service';
 import { ActivatedRoute } from '@angular/router';
-import { Usuario, Rutina, Ejercicio } from '../../interfaces/interfaces';
+import { Rutina, Ejercicio } from '../../interfaces/interfaces';
 import { UiServiceService } from 'src/app/services/ui-service.service';
 import { ExerciseComponent } from '../../components/exercise/exercise.component';
 
@@ -21,6 +20,7 @@ export class EditRoutinePage implements AfterViewInit {
   comprobar: boolean;
   exercise: any;
   ejerciciosBuscar: any;
+  contador: number = 0;
   rutina: Rutina = {};
   listaEjercicios: any[] = []; // Contendrá una copia de la lista de ejercicios completa
   rutinaEjercicios: any[] = []; // Contendrá la lista de ejercicios en la rutina
@@ -31,7 +31,6 @@ export class EditRoutinePage implements AfterViewInit {
   @ViewChildren(IonItem, {read: ElementRef}) items: QueryList<ElementRef>;
 
   constructor(private navCtrl: NavController,
-    private usuarioService: UsuarioService,
     private rutinaService: RutinasService,
     private ejerciciosService: EjerciciosService,
     private alertCtrl: AlertController,
@@ -49,6 +48,7 @@ export class EditRoutinePage implements AfterViewInit {
     }
   
     async getRutina(){
+      this.contador = 0;
       this.rutina = await this.rutinaService.getRutina(this.id);
       this.ejercicios = await this.ejerciciosService.getEjercicios();
       this.listaIds = await this.rutinaService.listaEjercicios(this.id);
@@ -60,8 +60,8 @@ export class EditRoutinePage implements AfterViewInit {
         this.exercise = await this.ejerciciosService.getEjercicioId(id);
         if(this.exercise != null){
           this.rutinaEjercicios.push(this.exercise);
+          this.contador++;
         }
-        //this.rutinaEjercicios.push(await this.ejerciciosService.getEjercicioId(id));
       }
 
       for(let ejercicio of this.ejercicios){
@@ -125,7 +125,6 @@ export class EditRoutinePage implements AfterViewInit {
           onEnd: ev =>{
             this.contentScrollActive = true;
             this.dejarCaerRutina(oneItem, ev.currentX, ev.currentY, i);
-            console.log("A ver que mierda es one Item", oneItem);
           }
         });
     
@@ -167,13 +166,11 @@ export class EditRoutinePage implements AfterViewInit {
       if(this.isInZone(endX, endY, dropRoutine)){
     
         const removedItem = this.ejerciciosBuscar.splice(index, 1);
-
-        //console.log("Id de la Rutina: ", this.id, "y su nombre es: ", this.rutina.nombre);
-        //console.log("Id del Ejercicio: ", removedItem[0]._id);
         this.rutinaEjercicios.push(removedItem[0]);
         const confirm = this.rutinaService.agregarEjercicio(this.id,removedItem[0]._id);
         if(confirm){
           this.uiService.presentToast("Ejercicio agregado");
+          this.contador++;
         }else{
           this.uiService.presentToast("No se pudo agregar");
         }
@@ -190,31 +187,36 @@ export class EditRoutinePage implements AfterViewInit {
     }
 
     async actualizar(){
-      const alert = await this.alertCtrl.create({
-        message: `¿Desea actualizar ${this.rutina.nombre}?`,
-        mode: "ios",
-        buttons: [
-          {
-            text: 'Confirmar',
-            id: 'confirm-button',
-            handler: async () => {
-              this.navCtrl.navigateRoot(`/routine/${this.id}`);
-              this.uiService.presentToast("Rutina actualizada");
-              this.uiService.recomendacion("Scroll para actualizar");
+      if(this.contador > 0){
+        const alert = await this.alertCtrl.create({
+          message: `¿Desea actualizar ${this.rutina.nombre}?`,
+          mode: "ios",
+          buttons: [
+            {
+              text: 'Confirmar',
+              id: 'confirm-button',
+              handler: async () => {
+                this.navCtrl.navigateRoot('/main/tabs/tab2', {animated: true});
+                this.uiService.presentToast("Rutina actualizada");
+                this.uiService.recomendacion("Scroll para actualizar");
+              }
+            }, 
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              id: 'cancel-button',
+              handler: () => {
+                console.log("Cancelado");
+              }
             }
-          }, 
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            id: 'cancel-button',
-            handler: () => {
-              console.log("Cancelado");
-            }
-          }
-        ]
-      });
-  
-      await alert.present();
+          ]
+        });
+    
+        await alert.present();
+      }else{
+        this.uiService.alertaInformativa("Inserte al menos un ejercicio");
+      }
+
 
     }
 
@@ -227,7 +229,13 @@ export class EditRoutinePage implements AfterViewInit {
             text: 'Confirmar',
             id: 'confirm-button',
             handler: async () => {
-                this.navCtrl.navigateRoot('/main/admin/admin1', {animated: true});
+              for(let ejercicio of this.rutinaEjercicios){ // Vaciamos la lista de ejercicios de la rutina
+                this.rutinaService.eliminarEjercicio(this.id, ejercicio._id);
+              }
+              for(let id of this.listaIds){ // Volvemos a rellenarla con la lista de id de ejercicios que obtuvimos previamente
+                this.rutinaService.agregarEjercicio(this.id, id);
+              }
+              this.navCtrl.navigateRoot('/main/tabs/tab2', {animated: true});
             }
           }, 
           {
@@ -266,6 +274,7 @@ export class EditRoutinePage implements AfterViewInit {
               const confirm = this.rutinaService.eliminarEjercicio(this.id,ejercicio._id);
               if(confirm){
                 this.uiService.presentToast("Ejercicio eliminado");
+                this.contador--;
                 if(!this.ejerciciosBuscar.includes(indice)){
                   this.ejerciciosBuscar.push(indice);
                 }

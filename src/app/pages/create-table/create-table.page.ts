@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, AfterViewInit, 
+import { Component, AfterViewInit, 
   ChangeDetectorRef, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { NavController, AlertController, Gesture, 
-  GestureController, IonItem, IonCard } from '@ionic/angular';
-import { UsuarioService } from '../../services/usuario.service';
+  GestureController, IonItem} from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
-import { Ejercicio, Rutina, Tabla } from '../../interfaces/interfaces';
-import { RutinasService } from '../../services/rutinas.service';
+import { Ejercicio, Tabla } from '../../interfaces/interfaces';
 import { UiServiceService } from '../../services/ui-service.service';
 import { TablasService } from 'src/app/services/tablas.service';
 import { EjerciciosService } from 'src/app/services/ejercicios.service';
@@ -25,6 +23,7 @@ export class CreateTablePage implements AfterViewInit {
   listaEjercicios: any[] = []; // Contendrá una copia de la lista de ejercicios completa
   tablaEjercicios: any[] = []; // Contendrá la lista de ejercicios en la tabla
   ejerciciosBuscar: any;
+  contador: number = 0;
   contentScrollActive = true; // Si es false no deja hacer scroll
   gestureArray: Gesture[] = [];
 
@@ -32,8 +31,6 @@ export class CreateTablePage implements AfterViewInit {
   @ViewChildren(IonItem, {read: ElementRef}) items: QueryList<ElementRef>;
 
   constructor(private navCtrl: NavController,
-              private usuarioService: UsuarioService,
-              private rutinaService: RutinasService,
               private ejerciciosService: EjerciciosService,
               private tablaService: TablasService,
               private alertCtrl: AlertController,
@@ -49,6 +46,7 @@ export class CreateTablePage implements AfterViewInit {
     this.getTabla();
     this.getEjercicios();
     this.updateTable();
+    this.contador = 0;
   }
 
   async getTabla(){
@@ -113,7 +111,7 @@ export class CreateTablePage implements AfterViewInit {
         },
         onEnd: ev =>{
           this.contentScrollActive = true;
-          this.dejarCaerRutina(oneItem, ev.currentX, ev.currentY, i);
+          this.dejarCaerTabla(oneItem, ev.currentX, ev.currentY, i);
         }
       });
   
@@ -149,7 +147,7 @@ export class CreateTablePage implements AfterViewInit {
     return true;
   }
 
-  dejarCaerRutina(item, endX, endY, index){
+  dejarCaerTabla(item, endX, endY, index){
     const dropRoutine = this.dropTable.nativeElement.getBoundingClientRect();
   
     if(this.isInZone(endX, endY, dropRoutine)){
@@ -160,6 +158,7 @@ export class CreateTablePage implements AfterViewInit {
       const confirm = this.tablaService.agregarEjercicio(this.id,removedItem[0]._id);
       if(confirm){
         this.uiService.presentToast("Ejercicio agregado");
+        this.contador++;
       }else{
         this.uiService.presentToast("No se pudo agregar el ejercicio");
       }
@@ -185,22 +184,19 @@ export class CreateTablePage implements AfterViewInit {
           text: 'Confirmar',
           id: 'confirm-button',
           handler: async () => {
-            //let indice = this.rutinaEjercicios.indexOf("ejercicio._id");
             let indice = -1;
             let count = -1;
-            //console.log("Soy indice", indice);
             for(let i of this.tablaEjercicios){
-              //console.log(i);
               count++;
               if(i._id === ejercicio._id){
                 indice = i;
                 break;
               }
             }
-            //console.log("Contador", count);
             const confirm = this.tablaService.eliminarEjercicio(this.id,ejercicio._id);
             if(confirm){
               this.uiService.presentToast("Ejercicio eliminado");
+              this.contador--;
               if(!this.ejerciciosBuscar.includes(indice)){
                 this.ejerciciosBuscar.push(indice);
               }
@@ -227,30 +223,35 @@ export class CreateTablePage implements AfterViewInit {
   }
 
   async crear(){
-    const alert = await this.alertCtrl.create({
-      message: `¿Desea crear ${this.tabla.nombre}?`,
-      mode: "ios",
-      buttons: [
-        {
-          text: 'Confirmar',
-          id: 'confirm-button',
-          handler: async () => {
-            this.navCtrl.navigateRoot(`/table/${this.id}`);
-            this.uiService.presentToast("Tabla creada");
+    if(this.contador > 0){
+      const alert = await this.alertCtrl.create({
+        message: `¿Desea crear ${this.tabla.nombre}?`,
+        mode: "ios",
+        buttons: [
+          {
+            text: 'Confirmar',
+            id: 'confirm-button',
+            handler: async () => {
+              this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
+              this.uiService.presentToast("Tabla creada");
+            }
+          }, 
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            id: 'cancel-button',
+            handler: () => {
+              console.log("Cancelado");
+            }
           }
-        }, 
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          id: 'cancel-button',
-          handler: () => {
-            console.log("Cancelado");
-          }
-        }
-      ]
-    });
+        ]
+      });
+  
+      await alert.present();
+    }else{
+      this.uiService.alertaInformativa("Inserte al menos un ejercicio");
+    }
 
-    await alert.present();
 
   }
 
@@ -267,7 +268,6 @@ export class CreateTablePage implements AfterViewInit {
             if(confirm){
               this.uiService.presentToast("Tabla cancelada");
               this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
-              //this.back();
             }else{
               this.uiService.presentToast("Error al cancelar");
             }

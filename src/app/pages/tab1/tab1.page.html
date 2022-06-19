@@ -19,7 +19,8 @@
   </ion-refresher>
 
   <div class="centrado">
-    <ion-button class="boton"
+    <ion-button *ngIf="rol === 'user'"
+                class="boton"
                 mode="ios"
                 (click)="presentAlertPrompt()">
         <ion-icon slot="start" name="add"></ion-icon>
@@ -31,7 +32,7 @@
       <ion-col>
         <ion-list size="12" *ngFor="let tabla of tablas">
           <ion-item>
-            <ion-label [routerLink]="['/table',tabla._id]">{{tabla.nombre}}</ion-label>
+            <ion-label (click)="detalle(tabla._id)">{{tabla.nombre}}</ion-label>
           </ion-item>
         </ion-list>
       </ion-col>

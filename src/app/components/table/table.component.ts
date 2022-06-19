@@ -2,21 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { UsuarioService } from '../../services/usuario.service';
 import { EjerciciosService } from '../../services/ejercicios.service';
-import { ActivatedRoute } from '@angular/router';
-import { Usuario, Rutina } from '../../interfaces/interfaces';
-import { RutinasService } from '../../services/rutinas.service';
+import { Usuario, Tabla } from '../../interfaces/interfaces';
 import { UiServiceService } from 'src/app/services/ui-service.service';
+import { TablasService } from '../../services/tablas.service';
 import { ExerciseComponent } from '../../components/exercise/exercise.component';
 
 @Component({
-  selector: 'app-routine',
-  templateUrl: './routine.page.html',
-  styleUrls: ['./routine.page.scss'],
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.scss'],
 })
-export class RoutinePage implements OnInit {
+export class TableComponent implements OnInit {
+
 
   usuario: Usuario = {};
-  rutina: Rutina = {};
+  tabla: Tabla = {};
   id: any;
   rol: string = '';
   ejercicios: any[] = [];
@@ -26,16 +26,14 @@ export class RoutinePage implements OnInit {
   constructor(private navCtrl: NavController,
               private usuarioService: UsuarioService,
               private ejercicioService: EjerciciosService,
-              private rutinaService: RutinasService,
+              private tablaService: TablasService,
               private alertCtrl: AlertController,
-              private modalCtrl: ModalController,
               private uiService: UiServiceService,
-              private activatedRoute: ActivatedRoute) { }
+              private modalCtrl: ModalController) { }
 
   ngOnInit() {
-    this.id = this.activatedRoute.snapshot.paramMap.get("_id");
     this.getUsuario();
-    this.getRutina();
+    this.getTabla();
     this.cargarEjercicios();
   }
 
@@ -44,26 +42,22 @@ export class RoutinePage implements OnInit {
     this.rol = this.usuario.rol;
   }
 
-  async getRutina(){
-    this.rutina = await this.rutinaService.getRutina(this.id);
-    //console.log(this.rutina);
+  async getTabla(){
+    this.tabla = await this.tablaService.getTabla(this.id);
   }
 
   async cargarEjercicios(){
     this.ejercicios = [];
-    this.ejercicio = await this.rutinaService.listaEjercicios(this.id);
-    //console.log("Lista de ids", this.ejercicio);
+    this.ejercicio = await this.tablaService.listaEjercicios(this.id);
     for(let id of this.ejercicio){
       this.exercise = await this.ejercicioService.getEjercicioId(id);
       if(this.exercise != null){
         this.ejercicios.push(this.exercise);
       }
-      //this.ejercicios.push(await this.ejercicioService.getEjercicioId(id));
     }
   }
 
   cargar(event){
-    //const id: string = event.detail.value;
     setTimeout(async ()=>{
       this.cargarEjercicios();
       event.target.complete();
@@ -80,18 +74,23 @@ export class RoutinePage implements OnInit {
     modal.present();
   }
 
+  async editar(){
+    this.navCtrl.navigateRoot(`/edit-table/${this.id}`, {animated: true});
+    this.modalCtrl.dismiss();
+}
+
   async eliminar() {
     const alert = await this.alertCtrl.create({
-      message: `¿Desea eliminar ${this.rutina.nombre}?`,
+      message: `¿Desea eliminar ${this.tabla.nombre}?`,
       mode: "ios",
       buttons: [
         {
           text: 'Confirmar',
           id: 'confirm-button',
           handler: async () => {
-            const confirm = await this.rutinaService.elimiarRutina(this.rutina);
+            const confirm = await this.tablaService.elimiarTabla(this.tabla);
             if(confirm){
-              this.uiService.presentToast("Rutina eliminada");
+              this.uiService.presentToast("Tabla eliminada");
               this.back();
             }else{
               this.uiService.presentToast("Error al eliminar");
@@ -113,12 +112,8 @@ export class RoutinePage implements OnInit {
   }
 
   async back(){
-    const rol = await this.usuarioService.comprobarRol();
-    if(rol){
-      this.navCtrl.navigateRoot('/main/admin/admin1', {animated: true});
-    }else{
-      this.navCtrl.navigateRoot('/main/tabs/tab2', {animated: true});
-    }
+    this.modalCtrl.dismiss();
   }
+
 
 }

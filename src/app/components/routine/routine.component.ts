@@ -2,22 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { UsuarioService } from '../../services/usuario.service';
 import { EjerciciosService } from '../../services/ejercicios.service';
-import { ActivatedRoute } from '@angular/router';
-import { Usuario, Rutina, Tabla } from '../../interfaces/interfaces';
+import { Usuario, Rutina } from '../../interfaces/interfaces';
 import { RutinasService } from '../../services/rutinas.service';
 import { UiServiceService } from 'src/app/services/ui-service.service';
-import { TablasService } from '../../services/tablas.service';
 import { ExerciseComponent } from '../../components/exercise/exercise.component';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.page.html',
-  styleUrls: ['./table.page.scss'],
+  selector: 'app-routine',
+  templateUrl: './routine.component.html',
+  styleUrls: ['./routine.component.scss'],
 })
-export class TablePage implements OnInit {
+export class RoutineComponent implements OnInit {
+
 
   usuario: Usuario = {};
-  tabla: Tabla = {};
+  rutina: Rutina = {};
   id: any;
   rol: string = '';
   ejercicios: any[] = [];
@@ -27,16 +26,14 @@ export class TablePage implements OnInit {
   constructor(private navCtrl: NavController,
               private usuarioService: UsuarioService,
               private ejercicioService: EjerciciosService,
-              private tablaService: TablasService,
+              private rutinaService: RutinasService,
               private alertCtrl: AlertController,
-              private uiService: UiServiceService,
-              private activatedRoute: ActivatedRoute,
-              private modalCtrl: ModalController) { }
+              private modalCtrl: ModalController,
+              private uiService: UiServiceService) { }
 
   ngOnInit() {
-    this.id = this.activatedRoute.snapshot.paramMap.get("_id");
     this.getUsuario();
-    this.getTabla();
+    this.getRutina();
     this.cargarEjercicios();
   }
 
@@ -45,13 +42,18 @@ export class TablePage implements OnInit {
     this.rol = this.usuario.rol;
   }
 
-  async getTabla(){
-    this.tabla = await this.tablaService.getTabla(this.id);
+  async getRutina(){
+    this.rutina = await this.rutinaService.getRutina(this.id);
   }
+
+  async editar(){
+    this.navCtrl.navigateRoot(`/edit-routine/${this.id}`, {animated: true});
+    this.modalCtrl.dismiss();
+}
 
   async cargarEjercicios(){
     this.ejercicios = [];
-    this.ejercicio = await this.tablaService.listaEjercicios(this.id);
+    this.ejercicio = await this.rutinaService.listaEjercicios(this.id);
     for(let id of this.ejercicio){
       this.exercise = await this.ejercicioService.getEjercicioId(id);
       if(this.exercise != null){
@@ -61,7 +63,6 @@ export class TablePage implements OnInit {
   }
 
   cargar(event){
-    //const id: string = event.detail.value;
     setTimeout(async ()=>{
       this.cargarEjercicios();
       event.target.complete();
@@ -80,16 +81,16 @@ export class TablePage implements OnInit {
 
   async eliminar() {
     const alert = await this.alertCtrl.create({
-      message: `¿Desea eliminar ${this.tabla.nombre}?`,
+      message: `¿Desea eliminar ${this.rutina.nombre}?`,
       mode: "ios",
       buttons: [
         {
           text: 'Confirmar',
           id: 'confirm-button',
           handler: async () => {
-            const confirm = await this.tablaService.elimiarTabla(this.tabla);
+            const confirm = await this.rutinaService.elimiarRutina(this.rutina);
             if(confirm){
-              this.uiService.presentToast("Tabla eliminada");
+              this.uiService.presentToast("Rutina eliminada");
               this.back();
             }else{
               this.uiService.presentToast("Error al eliminar");
@@ -111,12 +112,7 @@ export class TablePage implements OnInit {
   }
 
   async back(){
-    const rol = await this.usuarioService.comprobarRol();
-    if(rol){
-      this.navCtrl.navigateRoot('/main/admin/admin1', {animated: true});
-    }else{
-      this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
-    }
+    this.modalCtrl.dismiss();
   }
 
 }

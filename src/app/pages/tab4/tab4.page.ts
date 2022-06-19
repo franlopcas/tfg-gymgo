@@ -1,9 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Usuario, Ejercicio } from '../../interfaces/interfaces';
+import { Component, OnInit} from '@angular/core';
+import { Usuario} from '../../interfaces/interfaces';
 import { UsuarioService } from '../../services/usuario.service';
 import { NavController} from '@ionic/angular';
-import { EjerciciosService } from '../../services/ejercicios.service';
-import { ExerciseComponent } from '../../components/exercise/exercise.component';
 
 @Component({
   selector: 'app-tab4',

@@ -1,10 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren, Injectable } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AlertController, Gesture, GestureController, IonItem, NavController, ModalController } from '@ionic/angular';
-import { UsuarioService } from '../../services/usuario.service';
 import { EjerciciosService } from '../../services/ejercicios.service';
-import { RutinasService } from '../../services/rutinas.service';
 import { ActivatedRoute } from '@angular/router';
-import { Usuario, Tabla, Ejercicio } from '../../interfaces/interfaces';
+import { Tabla, Ejercicio } from '../../interfaces/interfaces';
 import { UiServiceService } from 'src/app/services/ui-service.service';
 import { TablasService } from '../../services/tablas.service';
 import { ExerciseComponent } from '../../components/exercise/exercise.component';
@@ -22,6 +20,7 @@ export class EditTablePage implements AfterViewInit {
   comprobar: boolean;
   ejerciciosBuscar: any;
   exercise: any;
+  contador: number = 0;
   tabla: Tabla = {};
   listaEjercicios: any[] = []; // Contendrá una copia de la lista de ejercicios completa
   tablaEjercicios: any[] = []; // Contendrá la lista de ejercicios en la tabla
@@ -32,7 +31,6 @@ export class EditTablePage implements AfterViewInit {
   @ViewChildren(IonItem, {read: ElementRef}) items: QueryList<ElementRef>;
 
   constructor(private navCtrl: NavController,
-    private usuarioService: UsuarioService,
     private tablaService: TablasService,
     private ejerciciosService: EjerciciosService,
     private alertCtrl: AlertController,
@@ -50,6 +48,7 @@ export class EditTablePage implements AfterViewInit {
     }
 
     async getTabla(){
+      this.contador = 0;
       this.tabla = await this.tablaService.getTabla(this.id);
       this.ejercicios = await this.ejerciciosService.getEjercicios();
       this.listaIds = await this.tablaService.listaEjercicios(this.id);
@@ -61,8 +60,8 @@ export class EditTablePage implements AfterViewInit {
         this.exercise = await this.ejerciciosService.getEjercicioId(id);
         if(this.exercise != null){
           this.tablaEjercicios.push(this.exercise);
+          this.contador++;
         }
-        //this.tablaEjercicios.push(await this.ejerciciosService.getEjercicioId(id));
       }
 
       for(let ejercicio of this.ejercicios){
@@ -98,30 +97,35 @@ export class EditTablePage implements AfterViewInit {
     }
 
     async actualizar(){
-      const alert = await this.alertCtrl.create({
-        message: `¿Desea actualizar ${this.tabla.nombre}?`,
-        mode: "ios",
-        buttons: [
-          {
-            text: 'Confirmar',
-            id: 'confirm-button',
-            handler: async () => {
-              this.navCtrl.navigateRoot(`/table/${this.id}`);
-              this.uiService.presentToast("Haga scroll para actualizar");
+      if(this.contador > 0){
+        const alert = await this.alertCtrl.create({
+          message: `¿Desea actualizar ${this.tabla.nombre}?`,
+          mode: "ios",
+          buttons: [
+            {
+              text: 'Confirmar',
+              id: 'confirm-button',
+              handler: async () => {
+                this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
+                this.uiService.presentToast("Haga scroll para actualizar");
+              }
+            }, 
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              id: 'cancel-button',
+              handler: () => {
+                console.log("Cancelado");
+              }
             }
-          }, 
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            id: 'cancel-button',
-            handler: () => {
-              console.log("Cancelado");
-            }
-          }
-        ]
-      });
-  
-      await alert.present();
+          ]
+        });
+    
+        await alert.present();
+      }else{
+        this.uiService.alertaInformativa("Inserte al menos un ejercicio");
+      }
+
     }
 
     async cancelar() {
@@ -133,7 +137,13 @@ export class EditTablePage implements AfterViewInit {
             text: 'Confirmar',
             id: 'confirm-button',
             handler: async () => {
-                this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
+              for(let ejercicio of this.tablaEjercicios){
+                this.tablaService.eliminarEjercicio(this.id, ejercicio._id);
+              }
+              for(let id of this.listaIds){
+                this.tablaService.agregarEjercicio(this.id, id);
+              }
+              this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
             }
           }, 
           {
@@ -162,7 +172,6 @@ export class EditTablePage implements AfterViewInit {
             handler: async () => {
               let indice = -1;
               let count = -1;
-              console.log("Soy indice", indice);
               for(let i of this.tablaEjercicios){
                 count++;
                 if(i._id === ejercicio._id){
@@ -170,10 +179,10 @@ export class EditTablePage implements AfterViewInit {
                   break;
                 }
               }
-              console.log("Contador", count);
               const confirm = this.tablaService.eliminarEjercicio(this.id,ejercicio._id);
               if(confirm){
                 this.uiService.presentToast("Ejercicio eliminado");
+                this.contador--;
                 if(!this.ejerciciosBuscar.includes(indice)){
                   this.ejerciciosBuscar.push(indice);
                 }
@@ -226,8 +235,7 @@ export class EditTablePage implements AfterViewInit {
           },
           onEnd: ev =>{
             this.contentScrollActive = true;
-            this.dejarCaerRutina(oneItem, ev.currentX, ev.currentY, i);
-            console.log("A ver que mierda es one Item", oneItem);
+            this.dejarCaerTabla(oneItem, ev.currentX, ev.currentY, i);
           }
         });
     
@@ -263,19 +271,17 @@ export class EditTablePage implements AfterViewInit {
       return true;
     }
 
-    dejarCaerRutina(item, endX, endY, index){
+    dejarCaerTabla(item, endX, endY, index){
       const dropRoutine = this.dropRoutine.nativeElement.getBoundingClientRect();
     
       if(this.isInZone(endX, endY, dropRoutine)){
     
         const removedItem = this.ejerciciosBuscar.splice(index, 1);
-
-        //console.log("Id de la Rutina: ", this.id, "y su nombre es: ", this.tabla.nombre);
-        //console.log("Id del Ejercicio: ", removedItem[0]._id);
         this.tablaEjercicios.push(removedItem[0]);
         const confirm = this.tablaService.agregarEjercicio(this.id,removedItem[0]._id);
         if(confirm){
           this.uiService.presentToast("Ejercicio agregado");
+          this.contador++;
         }else{
           this.uiService.presentToast("No se pudo agregar");
         }

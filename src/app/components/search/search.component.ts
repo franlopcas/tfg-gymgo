@@ -4,7 +4,6 @@ import { EjerciciosService } from '../../services/ejercicios.service';
 import { Usuario } from '../../interfaces/interfaces';
 import { UsuarioService } from '../../services/usuario.service';
 import { NavController, ModalController } from '@ionic/angular';
-import { UiServiceService } from '../../services/ui-service.service';
 import { ExerciseComponent } from '../exercise/exercise.component';
 
 @Component({
@@ -53,7 +52,6 @@ export class SearchComponent implements OnInit {
   async getEjercicios(){
     this.ejercicios = await this.ejerciciosService.getEjercicios();
     this.ejercicioBuscar = this.ejercicios;
-    //console.log("A ver si nos aclaramos", this.ejercicios[8].nombre);
   }
 
   buscar(event){

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Usuario, Tabla } from '../../interfaces/interfaces';
 import { UsuarioService } from '../../services/usuario.service';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { UiServiceService } from '../../services/ui-service.service';
 import { TablasService } from 'src/app/services/tablas.service';
+import { TableComponent } from '../../components/table/table.component';
 
 @Component({
   selector: 'app-tab1',
@@ -15,6 +16,7 @@ export class Tab1Page implements OnInit{
 
   usuario: Usuario = {};
   tabla: Tabla = {};
+  rol: string = '';
   tablas: any;
   nombre: string;
 
@@ -22,11 +24,12 @@ export class Tab1Page implements OnInit{
               private tablaService: TablasService,
               private navCtrl: NavController,
               private alertCtrl: AlertController,
-              private uiService: UiServiceService) {}
+              private uiService: UiServiceService,
+              private modalCtrl: ModalController) {}
 
   ngOnInit(){
-    //this.usuario = null;
     this.usuario = this.usuarioService.getUsuario();
+    this.rol = this.usuario.rol;
     this.getTablas();
     this.uiService.presentToast("Haga scroll para actualizar");
   }
@@ -79,9 +82,6 @@ export class Tab1Page implements OnInit{
   async crear(name: any){
     if(name != ""){
       this.tabla.nombre = name;
-      //this.tabla.usuario = this.usuario._id;
-      //console.log("Nombre de la tabla ", this.tabla.nombre);
-      //console.log("Id del usuario ", this.usuario._id);
 
       this.tabla = await this.tablaService.crearTabla(this.tabla.nombre, this.usuario._id);
       this.navCtrl.navigateRoot(`/create-table/${this.tabla._id}`, {animated: true});
@@ -90,6 +90,16 @@ export class Tab1Page implements OnInit{
       this.presentAlertPrompt();
     }
     
+  }
+
+  async detalle(id: string){
+    const modal = await this.modalCtrl.create({
+      component: TableComponent,
+      componentProps: {
+        id
+      }
+    });
+    modal.present();
   }
 
   verPerfil(){

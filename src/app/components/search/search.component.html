@@ -43,8 +43,6 @@
       <ion-row>
         <ion-col size="6" *ngFor="let ejercicio of ejercicioBuscar">
           <ion-card (click)="detalle(ejercicio._id)">
-          <!--<ion-card [routerLink]="['/exercise',ejercicio.nombre]"> -->
-            <!--<ion-card (click)="detalle(ejercicio.nombre)">-->
             <ion-card-header>
               <img class="image-cover" [style]="(ejercicio.cover | imagen) | domSanitizer">
             </ion-card-header>

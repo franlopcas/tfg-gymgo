@@ -7,6 +7,8 @@ import { RouterModule } from '@angular/router';
 import { PipesModule } from '../pipes/pipes.module';
 import { FavouritesComponent } from './favourites/favourites.component';
 import { ExerciseComponent } from './exercise/exercise.component';
+import { TableComponent } from './table/table.component';
+import { RoutineComponent } from './routine/routine.component';
 
 
 
@@ -15,7 +17,9 @@ import { ExerciseComponent } from './exercise/exercise.component';
     AvatarSelectorComponent,
     SearchComponent,
     FavouritesComponent,
-    ExerciseComponent
+    ExerciseComponent,
+    RoutineComponent,
+    TableComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +31,9 @@ import { ExerciseComponent } from './exercise/exercise.component';
     AvatarSelectorComponent,
     SearchComponent,
     FavouritesComponent,
-    ExerciseComponent
+    ExerciseComponent,
+    RoutineComponent,
+    TableComponent
   ]
 })
 export class ComponentsModule { }

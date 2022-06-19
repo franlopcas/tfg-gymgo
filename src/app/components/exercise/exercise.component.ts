@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { Usuario, Ejercicio } from '../../interfaces/interfaces';
 import { UsuarioService } from '../../services/usuario.service';
-import { ActivatedRoute} from '@angular/router';
 import { EjerciciosService } from '../../services/ejercicios.service';
 import { UiServiceService } from '../../services/ui-service.service';
 
@@ -25,14 +24,11 @@ export class ExerciseComponent implements OnInit {
   constructor(private navCtrl: NavController,
               private usuarioService: UsuarioService,
               private ejercicioService: EjerciciosService,
-              private activatedRoute: ActivatedRoute,
               private uiService: UiServiceService,
               private alertCtrl: AlertController,
               private modalCtrl: ModalController) { }
 
   ngOnInit() {
-    //this.nombre = this.activatedRoute.snapshot.paramMap.get("nombre");
-    console.log(this.id);
     this.getUsuario();
     this.getEjercicio();
     this.getFavoritos();
@@ -46,8 +42,6 @@ export class ExerciseComponent implements OnInit {
   async getEjercicio(){
     this.ejercicio = await this.ejercicioService.getEjercicio(this.id);
     this.cover = this.ejercicioService.verCover(this.ejercicio.cover);
-    console.log("Mi ID ES EL ", this.ejercicio._id);
-    //console.log(this.ejercicio);
   }
 
   async getFavoritos(){
@@ -114,7 +108,6 @@ export class ExerciseComponent implements OnInit {
         this.uiService.presentToast("Eliminado de favoritos");
         this.estrella = 'heart-outline';
       }
-      //this.estrella = 'heart-outline';
     }else{
       this.fav = true;
       const confirm = await this.usuarioService.agregarFavorito(this.ejercicio);
@@ -122,7 +115,6 @@ export class ExerciseComponent implements OnInit {
         this.uiService.presentToast("Añadido a favoritos");
         this.estrella = 'heart';
       }
-      //this.estrella = 'heart';
     }
   }
 

@@ -9,11 +9,16 @@
     margin: 5px;
 }
 
+.centrado{
+    text-align: end;
+    padding-right: 10px;
+}
+
 .image-cover{
-    width: 100px;
-    height: 100px;
     position: relative;
     text-align: center;
+    width: 100px;
+    height: 100px;
     background-position: center;
     background-size: cover;
 }

@@ -11,12 +11,14 @@ import { NavController } from '@ionic/angular';
 export class TabsPage{
 
   usuario: Usuario = {};
+  rol: string = '';
 
   constructor(private usuarioService: UsuarioService,
               private navCtrl: NavController) {}
 
   ngOnInit(){
     this.usuario = this.usuarioService.getUsuario();
+    this.rol = this.usuario.rol;
   }
 
   verPerfil(){

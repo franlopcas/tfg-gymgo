@@ -56,7 +56,6 @@ export class UsuarioService {
     return new Promise(resolve =>{
       this.http.post(`${URL}/user/create`,usuario)
                 .subscribe(async resp =>{
-                  console.log(resp);
                   if(resp['ok']){
                     await this.guardarToken(resp['token']);
                     resolve(true);
@@ -97,7 +96,6 @@ export class UsuarioService {
   async validaToken(): Promise<boolean>{
     await this.cargarToken();
     if(!this.token){
-      console.log("No existe token");
       this.navCtrl.navigateRoot('/login');
       return Promise.resolve(false);
     }
@@ -112,7 +110,6 @@ export class UsuarioService {
           this.usuario = resp['usuario'];
           resolve(true);
         }else{
-          console.log("No se encuentra el usuario");
           this.navCtrl.navigateRoot('/login');
         }
       });
@@ -187,23 +184,6 @@ export class UsuarioService {
       });
     });
   }
-/** 
-  async listaFavoritos(): Promise<string[]>{
-    const headers = new HttpHeaders({
-      'x-token': this.token
-    });
-    return new Promise(resolve=>{
-      this.http.get(`${URL}/user/favoritos`, {headers}).subscribe(resp=>{
-        if(resp['ok']){
-          this.favoritos = resp['favoritos'];
-          resolve(this.favoritos);
-        }else{
-          resolve(null);
-        }
-      });
-    });
-  }
-  */
 
 
 }

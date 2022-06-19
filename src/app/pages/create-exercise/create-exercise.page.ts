@@ -15,15 +15,14 @@ declare var window: any;
   styleUrls: ['./create-exercise.page.scss'],
 })
 export class CreateExercisePage implements OnInit {
-  //tempImages: string[] = [];
   tempImage: string = '';
+  existe: boolean = false;
   usuario: Usuario = {};
   ejercicio: Ejercicio = {};
   tipos: string[] = ['Piernas', 'Brazos', 'Pecho', 'Espalda', 'Hombros'];
   nombre: any;
   cover: string = '';
   rol: string = '';
-  //path: string = "";
 
   registerEjercicio = {
     nombre: '',
@@ -51,28 +50,24 @@ export class CreateExercisePage implements OnInit {
 
   async back(){
     this.tempImage = '';
-    const rol = await this.usuarioService.comprobarRol();
-    if(rol){
-      this.navCtrl.navigateRoot('/main/admin/admin2', {animated: true});
-    }else{
-      this.navCtrl.navigateRoot('/main/tabs/tab3', {animated: true});
-    }
+    this.navCtrl.navigateRoot('/main/tabs/tab3', {animated: true});
   }
 
   async crearEjercicio(fCrear: NgForm){
+    if(!this.existe){
+      this.uiService.alertaInformativa('Es obligatorio insertar una cover');
+    }
     if(fCrear.invalid){
-      this.uiService.alertaInformativa('Es obligatorio rellenar todos los campos');
+      this.uiService.alertaInformativa('Debe rellenar todos los campos obligatorios');
       return;
     }
 
     const valido = await this.ejercicioService.crearEjercicio(this.registerEjercicio);
 
     if(valido){
-      console.log("Valido",valido);
       // Navegar a tabs
-      this.navCtrl.navigateRoot('/main/admin/admin2',{animated: true});
+      this.navCtrl.navigateRoot('/main/tabs/tab3', {animated: true});
     }else{
-      console.log("No valido",valido);
       // Mostrar alerta de usuario y contraseña no correctos
       this.uiService.presentToast('No se pudo crear el ejercicio');
     }
@@ -112,6 +107,7 @@ export class CreateExercisePage implements OnInit {
       const img = window.Ionic.WebView.convertFileSrc( imageData );
       this.ejercicioService.subirImagen(imageData);
       this.tempImage = img;
+      this.existe = true;
      }, (err) => {
       // Handle error
      });
