@@ -32,4 +32,12 @@ export class UiServiceService {
 
     toast.present();
   }
+
+  async create(message: string){
+    const toast = await this.toastController.create({
+      message, position: 'middle', duration: 5000, color:"primary"
+    });
+
+    toast.present();
+  }
 }

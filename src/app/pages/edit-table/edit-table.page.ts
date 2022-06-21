@@ -43,6 +43,7 @@ export class EditTablePage implements AfterViewInit {
     ngAfterViewInit() {
       this.id = this.activatedRoute.snapshot.paramMap.get("_id");
       this.uiService.recomendacion("Se recomienda entre 6 y 8 ejercicios por entrenamiento");
+      this.uiService.create("Coloque el dedo sobre un ejercicio y arrastre a la derecha para llevarlo a la tabla");
       this.getTabla();
       this.updateTable();
     }
